@@ -416,6 +416,7 @@ def packages_missing_licenses(ctx, vendor_dir=None, requirements_file='vendor.tx
     for i, req in enumerate(requirements):
         pkg = req.strip().split("=")[0]
         possible_pkgs = [pkg, pkg.replace('-', '_')]
+        match_found = False
         if pkg in LIBRARY_DIRNAMES:
             possible_pkgs.append(LIBRARY_DIRNAMES[pkg])
         for pkgpath in possible_pkgs:
@@ -423,27 +424,35 @@ def packages_missing_licenses(ctx, vendor_dir=None, requirements_file='vendor.tx
             if pkgpath.exists() and pkgpath.is_dir():
                 for licensepath in LICENSES:
                     licensepath = pkgpath.joinpath(licensepath)
-                    exists = licensepath.exists()
-                    if exists:
-                        log("%s: Trying path %s... %s" % (pkg, licensepath, 'FOUND' if exists else 'NOT FOUND'))
+                    if licensepath.exists():
+                        match_found = True
+                        log("%s: Trying path %s... FOUND" % (pkg, licensepath))
                         break
             elif (pkgpath.exists() or pkgpath.parent.joinpath("{0}.py".format(pkgpath.stem)).exists()):
                 for licensepath in LICENSES:
                     licensepath = pkgpath.parent.joinpath("{0}.{1}".format(pkgpath.stem, licensepath))
-                    exists = licensepath.exists()
-                    if exists:
-                        log("%s: Trying path %s... %s" % (pkg, licensepath, 'FOUND' if exists else 'NOT FOUND'))
+                    if licensepath.exists():
+                        match_found = True
+                        log("%s: Trying path %s... FOUND" % (pkg, licensepath))
                         break
+            if match_found:
+                break
+        if match_found:
+            continue
         log("%s: No license found in %s" % (pkg, pkgpath))
         new_requirements.append(req)
     return new_requirements
 
 
 @invoke.task
-def download_licenses(ctx, vendor_dir=None, requirements_file='vendor.txt', package=None, only=False):
+def download_licenses(ctx, vendor_dir=None, requirements_file='vendor.txt', package=None, only=False, patched=False):
     log('Downloading licenses')
     if not vendor_dir:
-        vendor_dir = _get_vendor_dir(ctx)
+        if patched:
+            vendor_dir = _get_patched_dir(ctx)
+            requirements_file = 'patched.txt'
+        else:
+            vendor_dir = _get_vendor_dir(ctx)
     requirements_file = vendor_dir / requirements_file
     requirements = packages_missing_licenses(ctx, vendor_dir, requirements_file, package=package)
     with NamedTemporaryFile(prefix="pipenv", suffix="vendor-reqs", delete=False, mode="w") as fh:
@@ -468,7 +477,7 @@ def download_licenses(ctx, vendor_dir=None, requirements_file='vendor.txt', pack
     )
     for sdist in tmp_dir.iterdir():
         extract_license(vendor_dir, sdist)
-    new_requirements_file.remove()
+    new_requirements_file.unlink()
     drop_dir(tmp_dir)
 
 
