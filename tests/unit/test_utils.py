@@ -163,7 +163,8 @@ class TestUtils:
     )
     @pytest.mark.vcs
     def test_is_vcs(self, entry, expected):
-        assert pipenv.utils.is_vcs(entry) is expected
+        from pipenv.vendor.requirementslib.utils import is_vcs
+        assert is_vcs(entry) is expected
 
     @pytest.mark.utils
     def test_split_file(self):
