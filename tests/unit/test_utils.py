@@ -73,6 +73,8 @@ DEP_PIP_PAIRS = [
 @pytest.mark.utils
 @pytest.mark.parametrize("deps, expected", DEP_PIP_PAIRS)
 def test_convert_deps_to_pip(deps, expected):
+    if expected.startswith("Django"):
+        expected = expected.lower()
     assert pipenv.utils.convert_deps_to_pip(deps, r=False) == [expected]
 
 

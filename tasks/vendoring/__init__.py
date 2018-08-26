@@ -19,6 +19,7 @@ LIBRARY_DIRNAMES = {
     'requirements-parser': 'requirements',
     'backports.shutil_get_terminal_size': 'backports/shutil_get_terminal_size',
     'backports.weakref': 'backports/weakref',
+    'typing.py': 'backports/typing.py',
     'shutil_backports': 'backports/shutil_get_terminal_size',
     'python-dotenv': 'dotenv',
     'pip-tools': 'piptools',
@@ -67,7 +68,8 @@ PATCHED_RENAMES = {
 
 LIBRARY_RENAMES = {
     'pip': 'pipenv.patched.notpip',
-    'enum': 'backports/enum'
+    'enum': 'backports/enum',
+    'typing.py': 'backports/typing.py'
 }
 
 
