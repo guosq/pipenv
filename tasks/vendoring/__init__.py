@@ -25,7 +25,7 @@ LIBRARY_DIRNAMES = {
     'setuptools': 'pkg_resources',
     'msgpack-python': 'msgpack',
     'attrs': 'attr',
-    'enum34': 'enum'
+    'enum34': 'backports/enum'
 }
 
 # from time to time, remove the no longer needed ones
@@ -67,6 +67,7 @@ PATCHED_RENAMES = {
 
 LIBRARY_RENAMES = {
     'pip': 'pipenv.patched.notpip',
+    'enum': 'backports/enum'
 }
 
 

@@ -115,7 +115,7 @@ def test_convert_deps_to_pip(deps, expected):
     ],
 )
 def test_convert_deps_to_pip_one_way(deps, expected):
-    assert pipenv.utils.convert_deps_to_pip(deps, r=False) == [expected]
+    assert pipenv.utils.convert_deps_to_pip(deps, r=False) == [expected.lower()]
 
 
 @pytest.mark.skipif(isinstance(u"", str), reason="don't need to test if unicode is str")
