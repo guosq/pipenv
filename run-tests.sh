@@ -31,7 +31,7 @@ echo "Installing Pipenv…"
 PIP_USER="1" python -m pip install --upgrade setuptools
 PIP_USER="1" python3 -m pip install --upgrade setuptools
 python -m pip install -e "$(pwd)" --upgrade && python3 -m pip install -e "$(pwd)" --upgrade
-PIP_USER="1" python3 -m pipenv install --deploy --dev --system
+python3 -m pipenv install --deploy --dev --system
 
 # Otherwise, we're on a development machine.
 # First, try MacOS…
